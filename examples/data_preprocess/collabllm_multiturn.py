@@ -30,7 +30,7 @@ import os
 import uuid
 from typing import Any, Optional
 
-from datasets import Dataset, load_dataset
+from datasets import Dataset, concatenate_datasets, load_dataset
 
 SYSTEM_PROMPT = """The assistant is designed to be helpful, proactive, and highly interactive.
 
@@ -42,7 +42,7 @@ The assistant is mindful of how much content the user needs to read or type, kee
 
 The assistant adapts its tone to align with the user's emotional state and style, adjusting its approach as needed. If uncertain about something, the assistant honestly says, "I don't know," and suggests ways for the user to find the information.
 
-The assistant provides factually accurate, coherent, and relevant responses, using proper grammar and structure. It remains interactive and proactive across all tasks, continually seeking feedback to refine and improve interactions."""
+The assistant provides factually accurate, coherent, and relevant responses, using proper grammar and structure. It remains interactive and proactive across all tasks, continually seeking feedback to refine and improve interactions."""  # noqa
 
 
 # Required fields: "prompt", "ground_truth", "extra_info"
@@ -77,6 +77,7 @@ def collapse_example(example: dict[str, Any]) -> dict[str, Any]:
             "name": "collabllm",
             "single_turn_prompt": extra_info.pop("single_turn_prompt"),
             "task_desc": extra_info.pop("task_desc", "general assistance task"),
+            "index": str(uuid.uuid4()),
         },
     )
     return {
@@ -87,7 +88,6 @@ def collapse_example(example: dict[str, Any]) -> dict[str, Any]:
         "reward_model": {"style": "rule", "ground_truth": ground_truth},
         "data_source": "collabllm",
         "agent_name": "collabllm_agent",
-        "index": str(uuid.uuid4()),
     }
 
 
